@@ -1,0 +1,181 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Schnizel - Quote Generator</title>
+    <link rel="stylesheet" href="input.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kalam&display=swap');
+
+        .quote {
+            box-shadow: 10px 10px 30px rgba(0, 0, 0, .1);
+            transition-duration: 200ms;
+        }
+
+        :hover.quote {
+            transition-duration: 200ms;
+            box-shadow: 10px 10px 30px rgba(0, 0, 0, .2);
+        }
+
+        #thequote::before {
+            content: '"';
+        }
+
+        #thequote::after {
+            content: '"';
+        }
+
+        .shad {
+            box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+
+</head>
+
+
+
+<body class="m-0 ">
+
+    <div class="p-9 grid gap-1">
+        <select id="langsel" class="h-10 mb-4 rounded-lg pl-4 lg:mx-52 shad">
+            <option value="en">
+                English (EN)
+            </option>
+            <option value="es">
+                Spainish (ES)
+            </option>
+            <option value="pt">
+                Portugese (PT)
+            </option>
+            <option value="it">
+                Italy (IT)
+            </option>
+            <option value="fr">
+                French (FR)
+            </option>
+            <option value="cs">
+                Czechoslovakia (CS)
+            </option>
+            <option value="sk">
+                Slovakia (SK)
+            </option>
+        </select>
+
+        <div class="bg-slate-900 p-8 lg:mx-52 rounded-xl quote text-white flex flex-col shad">
+            <blockquote class="mb-3 font-quotee flex-col-2" id="thequote">
+                Loading...
+            </blockquote>
+            <span class="font-bold relative" id="theauthor">
+                Loading...
+            </span>
+        </div>
+
+        <button onclick="bako();"
+            class="bg-slate-900 h-10 rounded-lg text-white mt-4 lg:mx-52 shad hover:text-slate-900 hover:bg-white duration-200">
+            Speak
+        </button>
+
+        <button onclick="getit();change();"
+            class="bg-slate-900 h-10 rounded-lg text-white mt-4 lg:mx-52 shad hover:text-slate-900 hover:bg-white duration-200">
+            Next
+        </button>
+
+        <div class="flex justify-around">
+            <button
+                class="bg-slate-900 h-10 rounded-lg text-white mt-4 w-32 lg:mx-52 lg:w-52 shad hover:text-slate-900 hover:bg-white duration-200"
+                onclick="visitauthor()">
+                Author ↗
+            </button>
+            <button
+                class="bg-slate-900 h-10 rounded-lg text-white mt-4 w-32 lg:mx-52 lg:w-52 shad hover:text-slate-900 hover:bg-white duration-200"
+                onclick="visitquote()">
+                Quote ↗
+            </button>
+        </div>
+
+        <div class="bg-slate-900 text-white rounded-lg p-5 mt-5 mb-16 lg:mb-10 lg:mx-52 shad " id="taghandle">
+
+        </div>
+    </div>
+
+    <div class="w-full bg-black p-5 fixed bottom-0 ">
+        <p class="text-white text-[0.8rem]"><span class="text-red-600">*Note</span> : The "Quote ↗" and "Author ↗" only
+            works
+            for English, else is BETA.</p>
+    </div>
+    <script>
+        getit()
+        function getit() {
+            lang = document.getElementById('langsel').value;
+            options = {
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': '96bc43b09emsh739285e54bf286cp140346jsn79a02568c332',
+                    'X-RapidAPI-Host': 'quotes15.p.rapidapi.com'
+                }
+            };
+            link = 'https://quotes15.p.rapidapi.com/quotes/random/?language_code=' + lang;
+            fetch(link, options)
+                .then(function (resp) { return resp.json() }) // Convert data to json
+                .then(function (data) {
+                    milgaya(data);
+                    console.log(data);
+                })
+                .catch(function () {
+                    console.log("Error");
+                }
+                );
+        }
+        function milgaya(d) {
+            try {
+                document.getElementById("thequote").innerText = d.content;
+                document.getElementById("theauthor").innerText = d.originator.name;
+                aurl = d.originator.url;
+                qurl = d.url;
+                actaut = d.originator.name;
+                actquo = d.content;
+                for (i = 0; i < d.tags.length; i++) {
+                    document.getElementById("taghandle").innerHTML += "<p class='text-white'>Tag " + (i + 1) + "</p><div class='m-1 h-10 justify-content-center capitalize rounded-lg bg-white text-black flex justify-evenly flex-wrap flex-row'> " + d.tags[i] + "</div>";
+                }
+            }
+            catch (err) {
+                document.getElementById("thequote").innerHTML = "Please wait for <span class='font-bold'>atleast 2 secs</span> before reloading or clicking next, <span class='font-bold'>Press ' Next ' to Try Again</span> Or check your internet";
+                document.getElementById("theauthor").innerText = "";
+            }
+        }
+
+        function visitauthor() {
+            window.location = aurl;
+        }
+
+        function visitquote() {
+            window.location = qurl;
+        }
+
+        function bako() {
+            var msg = new SpeechSynthesisUtterance();
+            msg.text = actaut + " Once said " + actquo;
+            window.speechSynthesis.speak(msg);
+        }
+    </script>
+
+    <script>
+        change();
+        function change() {
+            const colors = ["#E7ECF2", "#D4E7EE", "#C6E1EC", "#EFDBE4", "#E6CBDC", "#EFC5CF", "#F4CDDF"
+                , "#F3C1DA", "#D8C8E2", "#DDBBDB", "#E3EDE4", "#DEEEE1", "#D4EBD9", "#DBEBC4"
+                , "#FEF6F1", "#FDF2F0", "#F0EFD0", "#F5E3CF", "#F8C4AA", "#EBBAB5", "#D3E2E9"
+                , "#B5D5E4", "#DFDFE9", "#D8D7E5", "#CAC5DB", "#C8B3D2", "#BCEBD9"];
+
+            var colsel = Math.floor(Math.random() * 26);
+
+            document.body.style.backgroundColor = colors[colsel];
+            document.getElementById("taghandle").innerHTML = "";
+        }
+    </script>
+
+</body>
+
+</html>
