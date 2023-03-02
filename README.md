@@ -9,6 +9,7 @@ Live view : <a href="http://schnizelquote.000webhostapp.com"> Click here to View
   <li>Clean and neat interface</li>
   <li>Uses API to retrieve quotes</li>
   <li>Built with TailwindCSS</li>
+  <li>Built-in Text-To-Speech support for ease of accessibility</li>
   <li>Uses FECTH api to make everything faster</li>
 </ul>
 
